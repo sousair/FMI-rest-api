@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './Register.css';
 
-const backendUrl = 'http://localhost:3001/medic';
+const backendUrl = 'http://18.230.75.29:3001/medic';
 
 class Register extends Component {
 
