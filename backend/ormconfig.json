@@ -3,7 +3,7 @@
    "host": "localhost",
    "port": 5432,
    "username": "postgres",
-   "password": "perfume765",
+   "password": "12345",
    "database": "teste",
    "synchronize": true,
    "logging": false,
