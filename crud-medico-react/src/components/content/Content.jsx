@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import './Content.css';
 
-const backendURL = 'http://18.230.75.29/medic';
+const backendURL = 'http://18.230.75.29:3001/medic';
 
 class Content extends Component {
 
