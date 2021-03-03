@@ -17,6 +17,7 @@
       "xml-js": "^1.6.11"
    },
    "scripts": {
-      "start": "ts-node src/index.ts"
+      "start": "ts-node src/index.ts",
+      "pm2": "pm2 start src/index.ts --watch -i max"
    }
 }
