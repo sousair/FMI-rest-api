@@ -17,7 +17,7 @@ createConnection().then(async connection => {
         });
     });
 
-    app.listen(3000);
-    console.log("Server running at port 3000");
+    app.listen(3001);
+    console.log("Server running at port 3001");
 
 }).catch(error => console.log(error));

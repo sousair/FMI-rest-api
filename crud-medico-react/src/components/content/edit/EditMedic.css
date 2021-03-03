@@ -1,0 +1,13 @@
+.editButton {
+    margin-right: 20px;
+    width: 250px;
+    height: 30px;
+}
+
+.editButtons {
+    width: 97%;
+    display: flex;
+    justify-content: center;
+    padding-left: 3%;
+
+}

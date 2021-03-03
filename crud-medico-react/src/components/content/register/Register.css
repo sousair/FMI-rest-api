@@ -1,0 +1,43 @@
+.form {
+    display: flex;
+    width: 80%;
+    padding: 5% 10% 0 10%;
+    justify-content: center;
+}
+
+.labels {
+    display: flex;
+    flex-direction: column;
+    padding-right: 50px;
+}
+
+label {
+    margin-top: 10px;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    margin-top: 10px;
+}
+
+.specialties {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.button {
+    width: 84%;
+    display: flex;
+    justify-content: center;
+    padding-left: 16%;
+}
+
+.button button {
+    width: 250px;
+    height: 30px;
+}

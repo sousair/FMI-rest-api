@@ -2,10 +2,10 @@ export class Validations {
 
     private lenghtVerify = (array, lenght) => array.length === lenght;
 
-    private numberfyStringArray = stringArray => stringArray.filter(digit => !!parseInt(digit));
+    private numberfyStringArray = stringArray => stringArray.filter(digit => parseInt(digit) <= 9 ? true : false);
 
-    verifyCEP(cep: string): boolean {
-        const cepArray = cep.split('')
+    public verifyCEP(cep: string): boolean {
+        const cepArray = cep.split('');
         if(!this.lenghtVerify(cepArray, 8)) return false;
 
         const numberCepArray = this.numberfyStringArray(cepArray);
@@ -14,17 +14,17 @@ export class Validations {
         return true;
     }
 
-    verifyCRM(crm: string): boolean {
+    public verifyCRM(crm: string): boolean {
         const crmArray = crm.split('');
         if(!this.lenghtVerify(crmArray, 7)) return false;
 
         const numberCrmArray = this.numberfyStringArray(crmArray);
-        if(this.lenghtVerify(numberCrmArray, 7)) return false;
+        if(!this.lenghtVerify(numberCrmArray, 7)) return false;
 
         return true;
     }
 
-    verifyTel(tel: string): boolean {
+    public verifyTel(tel: string): boolean {
         const telArray = tel.split('');
         if(!this.lenghtVerify(telArray, 8)) return false;
 
@@ -34,12 +34,12 @@ export class Validations {
         return true;
     }
 
-    verifyCel(cel: string): boolean{
+    public verifyCel(cel: string): boolean{
         const celArray = cel.split('');
-        if(!this.lenghtVerify(celArray, 8)) return false;
+        if(!this.lenghtVerify(celArray, 12)) return false;
 
         const numberCelArray = this.numberfyStringArray(celArray);
-        if(!this.lenghtVerify(numberCelArray, 8)) return false;
+        if(!this.lenghtVerify(numberCelArray, 12)) return false;
 
         return true;
     }

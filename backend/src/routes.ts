@@ -5,22 +5,31 @@ export const Routes = [
         method: "get",
         route: "/medic",
         controller: MedicController,
-        action: "all"
+        action: "getAllMedics"
     }, {
         method: "get",
-        route: "/medic/:id",
+        route: "/medic/specialties/:value",
         controller: MedicController,
-        action: "one"
+        action: "getMedicsWithSpecificSpecialty"
+    }, {
+        method: "get",
+        route: "/medic/:type/:value",
+        controller: MedicController,
+        action: "getOneMedic"
     }, {
         method: "post",
         route: "/medic",
         controller: MedicController,
-        action: "save"
+        action: "saveMedic"
+    },{
+        method: "put",
+        route: "/medic/:id",
+        controller: MedicController,
+        action: "updateMedic"
     }, {
         method: "delete",
         route: "/medic/:id",
         controller: MedicController,
-        action: "remove"
+        action: "removeMedic"
     }
-    // implementar rota update
 ];

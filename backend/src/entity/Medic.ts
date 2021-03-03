@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class Medic {
@@ -17,18 +17,34 @@ export class Medic {
     crm: string;
 
     @Column()
-    tel: number;
+    tel: string;
 
     @Column()
-    cel: number;
+    cel: string;
 
-    // retirar cep e utilizar informações da API
     @Column()
     cep: string;
+
+    @Column()
+    logradouro: string;
+
+    @Column()
+    bairro: string;
+    
+    @Column()
+    localidade: string;
+
+    @Column()
+    uf: string;
 
     @Column({
         array: true
     })
-    specialities: string;
+    specialties: string;
+
+    @Column({
+        default: false
+    })
+    isDeleted: boolean;
 
 }
