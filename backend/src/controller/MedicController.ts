@@ -1,31 +1,18 @@
+import { CepApi } from './../configs/cepAPI';
+import { Formatters } from './../configs/formatters';
 import { Validations } from './../configs/validations';
 import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Medic } from './../entity/Medic';
-import { xml2json } from 'xml-js';
-import axios from 'axios';
 
 export class MedicController {
 
     private medicRepository = getRepository(Medic);
-
     private validations = new Validations;
+    private formatter = new Formatters;
+    private cepApi = new CepApi;
 
-    private formatCEP(cep: string): string {
-        const subCep1 = cep.slice(0, 5);
-        const subCep2 = cep.slice(5, 9);
-
-        return `${subCep1}-${subCep2}`;
-    }
-
-    private formatCRM(crm: string): string {
-        const subCrm1 = crm.slice(0, 2);
-        const subCrm2 = crm.slice(2, 5);
-        const subCrm3 = crm.slice(5, 8);
-
-        return `${subCrm1}.${subCrm2}.${subCrm3}`;
-    }
-
+    // Não é usada porém pode vir a calhar em uma conta admin.
     async getAllMedics(request: Request, response: Response, next: NextFunction) {
         this.medicRepository
             .find({ isDeleted: false })
@@ -48,14 +35,14 @@ export class MedicController {
         const type: string = request.params.type;
         let value: string = request.params.value;
 
-        if(type === 'crm' || 'cep') {
-            switch(type) {
+        if (type === 'crm' || 'cep') {
+            switch (type) {
                 case 'crm': {
-                    value = this.formatCRM(value)
+                    value = this.formatter.formatCRM(value)
                     break;
                 }
                 case 'cep': {
-                    value = this.formatCEP(value);
+                    value = this.formatter.formatCEP(value);
                     break;
                 }
             }
@@ -70,44 +57,33 @@ export class MedicController {
         const medic = { ...request.body };
 
         try {
-            if(!medic.crm) throw 'Informe o CRM do médico';
-            if(!this.validations.verifyCRM(medic.crm)) throw 'CRM Inválido';
+            if (!medic.crm) throw 'Informe o CRM do médico';
+            if (!this.validations.verifyCRM(medic.crm)) throw 'CRM Inválido';
 
-            if(!medic.cep) throw 'Informe o CEP do médico';
-            if(!this.validations.verifyCEP(medic.cep)) throw 'CEP Inválido';
+            if (!medic.cep) throw 'Informe o CEP do médico';
+            if (!this.validations.verifyCEP(medic.cep)) throw 'CEP Inválido';
 
-            if(!medic.tel) throw 'Informe o Telefone Fixo do médico';
-            if(!this.validations.verifyTel(medic.tel)) throw 'Telefone Fixo Inválido';
+            if (!medic.tel) throw 'Informe o Telefone Fixo do médico';
+            if (!this.validations.verifyTel(medic.tel)) throw 'Telefone Fixo Inválido';
 
-            if(!medic.cel) throw 'Informe o Número do médico';
-            if(!this.validations.verifyCel(medic.cel)) throw 'Número Inválido';
+            if (!medic.cel) throw 'Informe o Número do médico';
+            if (!this.validations.verifyCel(medic.cel)) throw 'Número Inválido';
 
-            if(!medic.name) throw 'Infome o nome do médico';
+            if (!medic.name) throw 'Infome o nome do médico';
 
-            if(!medic.specialties) throw 'Informe ao menos duas especialidades do médico';
-            if(medic.specialties.length < 2) throw 'Numero de especialidades insuficiente';
+            if (!medic.specialties) throw 'Informe ao menos duas especialidades do médico';
+            if (medic.specialties.length < 2) throw 'Numero de especialidades insuficiente';
 
-            // requisição para api de cep
-            await axios.get(`https://viacep.com.br/ws/${medic.cep}/xml`)
-                .then(axiosRes => axiosRes.data)
-                .then(data => xml2json(data, { compact: true }))
-                .then(jsonData => JSON.parse(jsonData))
-                .then(xmlJsonfyed => {
-                    const xmlData = xmlJsonfyed.xmlcep;
+            await this.cepApi.medicWithCepInfo(medic);
 
-                    medic.logradouro = xmlData.logradouro._text;
-                    medic.bairro = xmlData.bairro._text;
-                    medic.localidade = xmlData.localidade._text;
-                    medic.uf = xmlData.uf._text;
-                })
-                .catch(error => response.status(500).send(error));
+            if (medic.error) response.status(400).send(medic.error);
 
-            medic.cep = this.formatCEP(medic.cep);
-            medic.crm = this.formatCRM(medic.crm);
+            medic.cep = this.formatter.formatCEP(medic.cep);
+            medic.crm = this.formatter.formatCRM(medic.crm);
 
             this.medicRepository.save(medic)
                 .then(_ => response.status(204).send(_))
-                .catch(error => response.status(400).send(error));
+                .catch(error => response.status(400).send(error, 'aqui'));
 
         } catch (msg) {
             response.status(400).send(msg);
@@ -118,35 +94,39 @@ export class MedicController {
 
         const medic = { ...request.body }
 
-        try{
-            if(medic.crm && !this.validations.verifyCRM(medic.crm)) throw 'CRM inválido';
-            if(medic.cep && !this.validations.verifyCEP(medic.cep)) throw 'CEP inválido';
-            if(medic.tel && !this.validations.verifyTel(medic.tel)) throw 'Telefone fixo inválido';
-            if(medic.cel && !this.validations.verifyCel(medic.cel)) throw 'Número inválido';
+        try {
+            if (medic.crm && !this.validations.verifyCRM(medic.crm)) throw 'CRM inválido';
+            if (medic.cep && !this.validations.verifyCEP(medic.cep)) throw 'CEP inválido';
+            if (medic.tel && !this.validations.verifyTel(medic.tel)) throw 'Telefone fixo inválido';
+            if (medic.cel && !this.validations.verifyCel(medic.cel)) throw 'Número inválido';
 
             const medicFromDataBase = await this.medicRepository
                 .findOne({ id: request.params.id });
-        
-            if(!medicFromDataBase) response.status(400).send('Médico não encontrado');
 
-            medic.crm = this.formatCRM(medic.crm);
-            medic.cep = this.formatCEP(medic.cep);
+            if (!medicFromDataBase) response.status(400).send('Médico não encontrado');
+
+            await this.cepApi.medicWithCepInfo(medic);
+
+            if (medic.error) response.status(400).send(medic.error);
+
+            medic.crm = this.formatter.formatCRM(medic.crm);
+            medic.cep = this.formatter.formatCEP(medic.cep);
 
             this.medicRepository
                 .save(medic)
                 .then(_ => response.status(200).send(_))
                 .catch(error => response.status(500).send(error));
 
-        }catch (msg) {
+        } catch (msg) {
             response.status(400).send(msg);
         }
     }
 
     async removeMedic(request: Request, response: Response, next: NextFunction) {
         const medicFromDataBase = await this.medicRepository
-                .findOne({ id: request.params.id });
+            .findOne({ id: request.params.id });
 
-        if(!medicFromDataBase) response.status(400).send('Médico não encontrado');
+        if (!medicFromDataBase) response.status(400).send('Médico não encontrado');
 
         this.medicRepository
             .save({ ...medicFromDataBase, isDeleted: true })
