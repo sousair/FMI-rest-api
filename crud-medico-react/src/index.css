@@ -7,20 +7,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-table {
-  border-collapse: collapse;
-}
-
-th {
-  text-align: center;
-  padding: 5px 5px 5px 5px;
-}
-
-td {
-  text-align: center;
-  padding: 5px 5px 5px 5px;
-}
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

@@ -1,0 +1,7 @@
+.tableLink{
+    color: black;
+}
+
+.tableLink:hover{
+    color: deepskyblue;
+}

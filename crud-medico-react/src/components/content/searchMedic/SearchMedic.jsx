@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './SearchMedic.css'
-import MedicOne from './medicOne/MedicOne';
+import './SearchMedic.css';
+import MedicTable from '../MedicTable/MedicTable';
 import axios from 'axios';
 
 const placeholders = {
@@ -37,7 +37,7 @@ class SearchMedic extends Component {
         const newState = { ...this.state };
         newState.value = event.target.value;
 
-        this.setState({ ...newState })
+        this.setState({ ...newState });
     }
 
     verifyNumbersArray(string, length) {
@@ -131,25 +131,12 @@ class SearchMedic extends Component {
     renderButton() {
         return (
             <div className="searchButton">
-                <button disabled={this.validateForm()} onClick={e => this.getMedicOne(e)} >Procurar</button>
+                <button disabled={this.validateForm()} onClick={e => this.getMedic(e)} >Procurar</button>
             </div>
         )
     }
 
-    renderMedic() {
-        if (this.state.medic.id) {
-            return (
-                <div className="medicOne">
-                    <MedicOne medic={this.state.medic}></MedicOne>
-                </div>
-            )
-        } else return (
-            <div className="medicOne">
-            </div>
-        )
-    }
-
-    getMedicOne(event) {
+    getMedic(event) {
         event.preventDefault()
 
         axios.get(`${backendUrl}/${this.state.type}/${this.state.value}`)
@@ -167,8 +154,8 @@ class SearchMedic extends Component {
     render() {
         return (
             <div>
-                { this.renderForm()}
-                { this.renderMedic()}
+                { this.renderForm() }
+                { this.state.medic.id ? <MedicTable medics={ [this.state.medic] } /> : '' }
             </div>
         )
     }
